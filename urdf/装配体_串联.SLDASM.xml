@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="装配体_串联.SLDASM">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.187004885484347 -1.18837705660836 0.784619484517979"
+        rpy="0 0 0" />
+      <mass
+        value="2956.08133076166" />
+      <inertia
+        ixx="518.246283929723"
+        ixy="-0.193549095060096"
+        ixz="1.57767852801484"
+        iyy="141.945071987091"
+        iyz="32.3465966345013"
+        izz="532.994284357096" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="huizhuan_link">
+    <inertial>
+      <origin
+        xyz="-0.0045156685034452 0.389928394422336 -0.0735723638961974"
+        rpy="0 0 0" />
+      <mass
+        value="272.658822519515" />
+      <inertia
+        ixx="43.7410441371983"
+        ixy="-0.299510878374305"
+        ixz="-0.0901890273025417"
+        iyy="69.2415072297109"
+        iyz="7.76260712915041"
+        izz="101.902043634779" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/huizhuan_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/huizhuan_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="huizhuan_joint"
+    type="continuous">
+    <origin
+      xyz="0 0.609936943594532 1.50741733901494"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="huizhuan_link" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="updown_link">
+    <inertial>
+      <origin
+        xyz="0.490020294909422 0.961034126223478 0.414972639266358"
+        rpy="0 0 0" />
+      <mass
+        value="756.739991579941" />
+      <inertia
+        ixx="98.0199717522795"
+        ixy="-3.24354769443272"
+        ixz="-3.15335320306068"
+        iyy="76.0352495778022"
+        iyz="-20.6940757201188"
+        izz="119.365383952016" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/updown_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/updown_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="updown_joint"
+    type="continuous">
+    <origin
+      xyz="-0.479702969466105 0.7444636062867 0.0330000000000785"
+      rpy="0 0 0" />
+    <parent
+      link="huizhuan_link" />
+    <child
+      link="updown_link" />
+    <axis
+      xyz="-0.99993217660885 -0.011646552377767 0" />
+  </joint>
+  <link
+    name="front_back_link">
+    <inertial>
+      <origin
+        xyz="0.470968875236498 0.626894171795733 0.190410120123621"
+        rpy="0 0 0" />
+      <mass
+        value="90.0326856184747" />
+      <inertia
+        ixx="5.32940649328931"
+        ixy="0.0055696686155659"
+        ixz="-0.0145457679279122"
+        iyy="4.97549284040339"
+        iyz="-0.37554132335018"
+        izz="5.73843731266288" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/front_back_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/front_back_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_back_joint"
+    type="prismatic">
+    <origin
+      xyz="-0.033139 1.9866 0.94833"
+      rpy="0 0 0" />
+    <parent
+      link="updown_link" />
+    <child
+      link="front_back_link" />
+    <axis
+      xyz="0.010758 -0.92367 -0.38303" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="jiegetou_link">
+    <inertial>
+      <origin
+        xyz="-0.00429994447681969 0.334730266430001 0.138941698694205"
+        rpy="0 0 0" />
+      <mass
+        value="379.588617438536" />
+      <inertia
+        ixx="31.0431201323296"
+        ixy="0.052698272808396"
+        ixz="0.022109819776554"
+        iyy="26.5062500552561"
+        iyz="-1.88128049710439"
+        izz="30.2627732010079" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/jiegetou_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/jiegetou_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="jiegetou_joint"
+    type="continuous">
+    <origin
+      xyz="0.46938462258532 0.914194374969433 0.252284999266074"
+      rpy="0 0 0" />
+    <parent
+      link="front_back_link" />
+    <child
+      link="jiegetou_link" />
+    <axis
+      xyz="-0.0107583457090147 0.923673864384503 0.383028524069167" />
+  </joint>
+  <link
+    name="chanban_link">
+    <inertial>
+      <origin
+        xyz="0.421999999976831 0.244667533077565 -0.0575007260342454"
+        rpy="0 0 0" />
+      <mass
+        value="36.1397819587074" />
+      <inertia
+        ixx="1.17963292813327"
+        ixy="-7.0864184774505E-10"
+        ixz="-2.64008388423421E-09"
+        iyy="0.336287358757918"
+        iyz="0.193495156391385"
+        izz="1.11292047274567" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/chanban_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/chanban_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="chanban_joint"
+    type="continuous">
+    <origin
+      xyz="-0.41899999999998 1.14993694359281 0.835286561443913"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="chanban_link" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="chanban_huosai_link">
+    <inertial>
+      <origin
+        xyz="0.422 0.236593265908223 -0.0558238725655861"
+        rpy="0 0 0" />
+      <mass
+        value="15.4501900444518" />
+      <inertia
+        ixx="0.412331999427838"
+        ixy="8.96726630534722E-16"
+        ixz="5.09012943065683E-15"
+        iyy="0.0708827565943288"
+        iyz="0.0759981252345683"
+        izz="0.375047072863541" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/chanban_huosai_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/chanban_huosai_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="chanban_huosai_joint"
+    type="prismatic">
+    <origin
+      xyz="0 0.339672954967903 -0.0801453907805885"
+      rpy="0 0 0" />
+    <parent
+      link="chanban_link" />
+    <child
+      link="chanban_huosai_link" />
+    <axis
+      xyz="0 -0.97327494260144 0.229642953526041" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="chanban_benti_link">
+    <inertial>
+      <origin
+        xyz="0.41833751220593 0.721211102001956 -0.352140461186548"
+        rpy="0 0 0" />
+      <mass
+        value="572.22611306932" />
+      <inertia
+        ixx="127.484308551489"
+        ixy="7.69282433791163"
+        ixz="0.165936529272896"
+        iyy="56.5541321042939"
+        iyz="18.0533634060072"
+        izz="167.970398744802" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/chanban_benti_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/chanban_benti_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="chanban_benti_joint"
+    type="continuous">
+    <origin
+      xyz="0 0.378768474922782 -0.0893699277319111"
+      rpy="0 0 0" />
+    <parent
+      link="chanban_huosai_link" />
+    <child
+      link="chanban_benti_link" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="xinglunpan_link_left">
+    <inertial>
+      <origin
+        xyz="-1.80366832580603E-12 0.0130100641003494 0.0601799032548234"
+        rpy="0 0 0" />
+      <mass
+        value="33.1230592529017" />
+      <inertia
+        ixx="0.546014632654347"
+        ixy="1.36161473946365E-05"
+        ixz="-2.9401507181143E-06"
+        iyy="0.571145303579202"
+        iyz="0.106731558379726"
+        izz="1.04177350653435" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/xinglunpan_link_left.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/xinglunpan_link_left.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="xinglunpan_joint_left"
+    type="continuous">
+    <origin
+      xyz="-0.358000000000011 0.897774564291463 -0.224779517992865"
+      rpy="0 0 0" />
+    <parent
+      link="chanban_benti_link" />
+    <child
+      link="xinglunpan_link_left" />
+    <axis
+      xyz="0 -0.211304768939857 -0.977420224173448" />
+  </joint>
+  <link
+    name="xinglunpan_link_right">
+    <inertial>
+      <origin
+        xyz="-6.41790370847772E-10 0.0130100642672515 0.0601799032174734"
+        rpy="0 0 0" />
+      <mass
+        value="33.1230592529256" />
+      <inertia
+        ixx="0.546534905429509"
+        ixy="0.000873734451310297"
+        ixz="-0.000188915463951094"
+        iyy="0.570648702966633"
+        iyz="0.106838989133487"
+        izz="1.04175073953831" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/xinglunpan_link_right.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://装配体_串联.SLDASM/meshes/xinglunpan_link_right.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="xinglunpan_joint_right"
+    type="continuous">
+    <origin
+      xyz="1.20199999999999 0.897774564291463 -0.224779517992883"
+      rpy="0 0 0" />
+    <parent
+      link="chanban_benti_link" />
+    <child
+      link="xinglunpan_link_right" />
+    <axis
+      xyz="0 -0.211304768939858 -0.977420224173448" />
+  </joint>
+</robot>

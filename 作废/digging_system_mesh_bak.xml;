@@ -1,0 +1,155 @@
+import numpy as np
+import mujoco
+from scipy.spatial import cKDTree  # <-- 核心算法升级
+
+class MeshDiggingSystem:
+    def __init__(self, model, data, mesh_name, 
+                 scene_body_name="voxel_target",  # 确保这里追踪的是带旋转的那个body
+                 voxel_xml_prefix="vx_", 
+                 spacing=0.14, 
+                 x_start=2.0):
+        
+        self.model = model
+        self.data = data
+        self.spacing = spacing
+        self.box_size = spacing / 2
+        self.wall_x_start = x_start
+        self.scene_body_name = scene_body_name
+        self.step_counter = 0
+        
+        # --- 0. 自动计算场景变换矩阵 ---
+        self.scene_body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, scene_body_name)
+        if self.scene_body_id != -1:
+            print(f"🌍 锁定场景锚点: '{scene_body_name}'")
+            mujoco.mj_forward(model, data) 
+            self.scene_pos = data.body(self.scene_body_id).xpos
+            self.scene_rot = data.body(self.scene_body_id).xmat.reshape(3, 3)
+            self.scene_rot_inv = self.scene_rot.T
+        else:
+            print(f"⚠️ 警告: 未找到 '{scene_body_name}'，假设位于原点。")
+            self.scene_pos = np.array([0., 0., 0.])
+            self.scene_rot_inv = np.eye(3)
+
+        # --- 1. 获取 Mesh 顶点并建立 KD-Tree ---
+        print(f"🔍 正在加载截割头 Mesh: '{mesh_name}'...")
+        try:
+            mesh_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_MESH, mesh_name)
+            if mesh_id == -1:
+                raise ValueError(f"❌ 找不到 Mesh: '{mesh_name}'")
+            
+            vert_adr = model.mesh_vertadr[mesh_id]
+            vert_num = model.mesh_vertnum[mesh_id]
+            # 获取所有顶点 (N, 3)
+            self.mesh_verts = model.mesh_vert[vert_adr : vert_adr + vert_num * 3].reshape(-1, 3)
+            
+            # --- 🛡️ 自检诊断：打印尺寸 ---
+            min_v = np.min(self.mesh_verts, axis=0)
+            max_v = np.max(self.mesh_verts, axis=0)
+            dims = max_v - min_v
+            print(f"📏 Mesh 物理尺寸 (XYZ): {dims[0]:.3f}m x {dims[1]:.3f}m x {dims[2]:.3f}m")
+            if np.max(dims) > 5.0:
+                print("⚠️ 警告：Mesh 尺寸看起来非常巨大！请检查 STL 单位是否错误 (比如把mm当成了m)？")
+
+            # 计算最大半径用于粗筛
+            self.max_radius = np.max(np.linalg.norm(self.mesh_verts, axis=1))
+
+            # 构建 KD-Tree (极速最近邻搜索)
+            print("🌲 正在构建表面几何索引 (KD-Tree)...")
+            self.kdtree = cKDTree(self.mesh_verts)
+            print(f"✅ 初始化完成! 顶点数: {len(self.mesh_verts)}")
+            
+        except Exception as e:
+            print(f"❌ 初始化失败: {e}")
+            raise
+
+        # --- 2. 建立体素索引 ---
+        self.voxel_index = {}
+        self.active_voxels = set()
+        print("🔍 正在索引体素...")
+        body_names = [mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, i) for i in range(model.nbody)]
+        count = 0
+        for i, name in enumerate(body_names):
+            if name and name.startswith(voxel_xml_prefix):
+                try:
+                    parts = name.split('_')
+                    k, i_idx, j = int(parts[1]), int(parts[2]), int(parts[3])
+                    self.voxel_index[(k, i_idx, j)] = i
+                    self.active_voxels.add((k, i_idx, j))
+                    count += 1
+                except: pass
+        print(f"✅ 索引完成。体素数量: {count}")
+
+    def world_to_local_grid(self, x, y, z):
+        p_world = np.array([x, y, z])
+        p_centered = p_world - self.scene_pos
+        p_local = self.scene_rot_inv @ p_centered
+        k = int(round((p_local[0] - self.wall_x_start - self.box_size) / self.spacing))
+        i = int(round((p_local[2] - self.box_size) / self.spacing))
+        j = int(round(p_local[1] / self.spacing))
+        return k, i, j
+
+    def perform_cutting(self, cutting_body_name, tolerance=0.02):
+        """
+        :param tolerance: 接触容差 (米)。默认 0.02 (2cm)。
+                          意思是：只要体素中心距离 Mesh 表面小于 2cm，就判定为接触。
+        """
+        self.step_counter += 1
+        reward = 0
+        
+        body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, cutting_body_name)
+        if body_id == -1: return 0
+        
+        head_pos = self.data.body(body_id).xpos
+        head_mat = self.data.body(body_id).xmat.reshape(3, 3)
+        
+        # 1. 【粗筛】基于包围球
+        center_k, center_i, center_j = self.world_to_local_grid(*head_pos)
+        search_range = int(np.ceil(self.max_radius / self.spacing)) + 1
+        
+        candidates = []
+        candidate_keys = []
+        
+        for dk in range(-search_range, search_range + 1):
+            for di in range(-search_range, search_range + 1):
+                for dj in range(-search_range, search_range + 1):
+                    key = (center_k + dk, center_i + di, center_j + dj)
+                    if key in self.active_voxels:
+                        vid = self.voxel_index[key]
+                        v_pos = self.data.body(vid).xpos
+                        candidates.append(v_pos)
+                        candidate_keys.append(key)
+        
+        if not candidates:
+            return 0
+        
+        candidates = np.array(candidates)
+        
+        # 2. 【精筛】KD-Tree 贴肤检测 (Point Cloud Distance)
+        # 将体素坐标转换到截割头的局部坐标系
+        # Transformation: P_local = (P_world - T_body) @ R_body
+        voxels_in_head_frame = (candidates - head_pos) @ head_mat 
+        
+        # 查询最近邻距离 (Distance to nearest vertex)
+        # k=1 表示找最近的1个点
+        dists, _ = self.kdtree.query(voxels_in_head_frame, k=1)
+        
+        # 3. 判定：如果距离小于容差，说明碰到了
+        # 使用 KD-Tree 后，凹陷部分（截齿之间）距离会很大，所以不会误判！
+        is_hit = dists <= tolerance
+        
+        indices_to_remove = np.where(is_hit)[0]
+        
+        for idx in indices_to_remove:
+            key = candidate_keys[idx]
+            body_id = self.voxel_index[key]
+            
+            geom_id = self.model.body_geomadr[body_id]
+            if geom_id != -1:
+                self.model.geom_size[geom_id] = [0, 0, 0]
+                self.model.geom_rgba[geom_id] = [0, 0, 0, 0]
+            
+            self.active_voxels.remove(key)
+            reward += 1
+            print(f"💥 粉碎体素! (距离表面 {dists[idx]*1000:.1f} mm)")
+            
+        return reward

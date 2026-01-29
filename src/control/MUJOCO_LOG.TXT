@@ -1,0 +1,9 @@
+Fri Jan 23 08:55:03 2026
+ERROR: mjv_makeSceneState: mjvSceneState buffer is not fully used
+
+Fri Jan 23 09:08:36 2026
+ERROR: mjv_makeSceneState: mjvSceneState buffer is not fully used
+
+Fri Jan 23 09:10:14 2026
+ERROR: mjv_makeSceneState: mjvSceneState buffer is not fully used
+
